@@ -1,0 +1,4 @@
+# Passwords are hashed with bcrypt: https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md#about-bcrypt
+
+basic_auth_users:
+    admin: $2y$10$mDwo.lAisC94iLAyg5i3R5rOb7qZXUknPJwypwn0yEJWQq/FzPvZSmC
