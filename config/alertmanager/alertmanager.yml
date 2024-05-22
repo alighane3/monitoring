@@ -1,0 +1,14 @@
+route:
+  receiver: 'mail'
+  repeat_interval: 4h
+  group_by: [ alertname ]
+
+
+receivers:
+  - name: 'mail'
+    email_configs:
+      - smarthost: 'mail.domain.com:465'
+        auth_username: 'monitoring@domain.com'
+        auth_password: "samplepass"
+        from: 'monitoring@domain.com'
+        to: 'me@domain.com'
