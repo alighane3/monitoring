@@ -1,7 +1,7 @@
 monitoring http, ping, node, mysql and etc with docker compose using prometheus and grafana
 
 ------------
-install mysql exporter for nodes:
+- install mysql exporter for nodes:
 
 MYSQL_EXPORTER_VERSION=$(curl -sL https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest | grep "tag_name"   | sed -E 's/.*"([^"]+)".*/\1/'|sed 's/v//')
 
@@ -63,7 +63,7 @@ firewall-cmd --reload
 curl http://localhost:9104/metrics
 
 ------------
-install node exporter full resources linux host:
+- install node exporter full resources linux host:
 
 sudo groupadd -f node_exporter
 sudo useradd -g node_exporter --no-create-home --shell /bin/false node_exporter
@@ -108,7 +108,7 @@ firewall-cmd --reload
 http://<node_exporter-ip>:9100/metrics
 
 ------------
-install blackbox exporter:
+- install blackbox exporter:
 
 useradd --no-create-home --shell /bin/false blackbox_exporter
 
@@ -163,7 +163,7 @@ firewall-cmd --reload
 http://<node_exporter-ip>:9115/metrics
 
 ------------
-install supervisor exporter:
+- install supervisor exporter:
 
 nano /etc/supervisor/supervisord.conf
 [inet_http_server]
