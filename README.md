@@ -59,6 +59,7 @@ systemctl enable mysql_exporter
 firewall-cmd --permanent --zone=public --add-port=9104/tcp
 firewall-cmd --reload
 
+- Verify mysql exporter is Running:
 curl http://localhost:9104/metrics
 
 ------------
@@ -100,11 +101,11 @@ systemctl start node_exporter
 systemctl status node_exporter
 systemctl enable node_exporter
 
-firewall-cmd --permanent --zone=public --add-port=9200/tcp
+firewall-cmd --permanent --zone=public --add-port=9100/tcp
 firewall-cmd --reload
 
 - Verify Node Exporter is Running:
-http://<node_exporter-ip>:9200/metrics
+http://<node_exporter-ip>:9100/metrics
 
 ------------
 install blackbox exporter:
@@ -154,3 +155,47 @@ systemctl daemon-reload
 systemctl start blackbox_exporter
 systemctl status blackbox_exporter
 systemctl enable blackbox_exporter
+
+firewall-cmd --permanent --zone=public --add-port=9115/tcp
+firewall-cmd --reload
+
+- Verify blackbox Exporter is Running:
+http://<node_exporter-ip>:9115/metrics
+
+------------
+install supervisor exporter:
+
+nano /etc/supervisor/supervisord.conf
+[inet_http_server]
+port = 127.0.0.1:9001
+
+supervisorctl reread
+supervisorctl update
+
+curl http://127.0.0.1:9001/RPC2
+git clone https://github.com/salimd/supervisord_exporter.git
+go build
+
+mkdir -p /etc/supervisor/logs/
+
+nano /etc/supervisor/conf.d/supervisor-metrics.conf
+[program:supervisor-metrics]
+process_name=%(program_name)s_%(process_num)02d
+command=/root/supervisor/supervisord_exporter/supervisord_exporter -supervisord-url="http://127.0.0.1:9001/RPC2" -web.listen-address=":9200" -web.telemetry-path="/metrics"
+autostart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/etc/supervisor/logs/supervisor-metrics.log
+stopwaitsecs=3600
+startsecs=0
+
+supervisorctl reread
+supervisorctl update
+
+- Verify Node Exporter is Running:
+http://<node_exporter-ip>:9200
+http://<node_exporter-ip>:9200/metrics
+
+Source: https://github.com/salimd/supervisord_exporter
