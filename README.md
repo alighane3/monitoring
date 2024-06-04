@@ -4,7 +4,7 @@ monitoring http, ping, node, mysql and etc with docker compose using prometheus 
 - install mysql exporter for nodes:
 
 MYSQL_EXPORTER_VERSION=$(curl -sL https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest | grep "tag_name"   | sed -E 's/.*"([^"]+)".*/\1/'|sed 's/v//')
-
+wget https://github.com/prometheus/mysqld_exporter/releases/download/v$MYSQL_EXPORTER_VERSION/mysqld_exporter-$MYSQL_EXPORTER_VERSION.linux-amd64.tar.gz
 tar xvf mysqld_exporter*.tar.gz
 cd mysqld_exporter*.*-amd64
 cp mysqld_exporter /usr/bin/
@@ -52,9 +52,9 @@ WantedBy=multi-user.target
 
 chmod 664 /lib/systemd/system/mysqld_exporter.service
 systemctl daemon-reload
-systemctl start mysql_exporter
-systemctl status mysql_exporter
-systemctl enable mysql_exporter
+systemctl start mysqld_exporter
+systemctl status mysqld_exporter
+systemctl enable mysqld_exporter
 
 firewall-cmd --permanent --zone=public --add-port=9104/tcp
 firewall-cmd --reload
