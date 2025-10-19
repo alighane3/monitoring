@@ -1,0 +1,13 @@
+groups:
+- name: ReplicationDown
+  rules:
+
+  # replication down
+  - alert: Replication-Status
+    expr: mysql_slave_sql_running{instance="replica-server:9105", job="mysql-rep", server="replica-server"} != 1
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: database replication is down.
+      description: database admin_newcash replication slave is down.
