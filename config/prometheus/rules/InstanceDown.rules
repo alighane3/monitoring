@@ -1,0 +1,17 @@
+groups:
+- name: InstanceDown
+  rules:
+
+      # Http down
+      - alert: website-status
+        expr: ( probe_http_status_code{job="blackbox-http-site1"} != 200 ) and ( probe_http_status_code{job="blackbox-http-site2"} != 200 )
+        for: 3m
+        labels:
+          severity: critical
+
+      # Icmp Check
+      - alert: Server-Status
+        expr: ( probe_success{job="blackbox-http-site1"} != 1 ) and ( probe_success{job="blackbox-http-site2"} != 1 )
+        for: 3m
+        labels:
+          severity: critical
