@@ -18,7 +18,7 @@ receivers:
         send_resolved: true
         message: '{{ template "telegram_message" . }}'
 #        http_config:
-#          proxy_url: 'http://'
+#          proxy_url: 'http://ip-port'
 
 templates:
   - '/etc/alertmanager/template/telegram_message.tmpl'
