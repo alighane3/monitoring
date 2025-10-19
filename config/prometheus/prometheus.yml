@@ -83,6 +83,13 @@ scrape_configs:
       - targets: ['YOUR_MYSQL_SERVER2_IP:9104']
         labels:
           server: database_server2
+          
+  - job_name: 'mysql-rep'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['replica-server:9105']
+        labels:
+          server: replica-server
 
   - job_name: 'supervisor'
     metrics_path: /metrics
