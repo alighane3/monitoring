@@ -1,0 +1,25 @@
+{{ define "telegram_message" }}
+  {{ if gt (len .Alerts.Firing) 0 }}
+    🚨 *Alert firing:*
+    {{- range .Alerts.Firing }}
+{{ template "telegram_alert_firing" . }}
+    {{- end }}
+  {{ end }}
+  {{ if gt (len .Alerts.Resolved) 0 }}
+    ✅ *Alert resolved:*
+    {{- range .Alerts.Resolved }}
+{{ template "telegram_alert_resolved" . }}
+    {{- end }}
+  {{ end }}
+{{ end }}
+
+{{ define "telegram_alert_firing" }}
+Alert name: `{{ .Labels.alertname }}`
+Instance: `{{ .Labels.instance }}`
+{{ end }}
+
+{{ define "telegram_alert_resolved" }}
+Alert name: `{{ .Labels.alertname }}`
+Instance: `{{ .Labels.instance }}`
+DownTime: `{{ .EndsAt.Sub .StartsAt }}`
+{{ end }}
