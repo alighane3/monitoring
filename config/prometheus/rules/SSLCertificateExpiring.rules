@@ -1,0 +1,12 @@
+groups:
+- name: SSLCertificateExpiring
+  rules:
+
+  - alert: SSLCertificateExpiring
+    expr: up == 1 and (probe_ssl_earliest_cert_expiry{job="blackbox-http-site1"} - time()) / 3600 / 24 < 5
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "SSL Certificate for [{{ $labels.instance }}] is expiring soon"
+      description: "The SSL certificate for [{{ $labels.instance }}] has less than 5 days remaining."
