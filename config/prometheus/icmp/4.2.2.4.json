@@ -1,0 +1,10 @@
+[
+    {
+        "targets": [
+            "4.2.2.4"
+        ],
+        "labels": {
+            "Note": "domain server"
+        }
+    }
+]
