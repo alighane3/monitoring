@@ -1,0 +1,13 @@
+groups:
+- name: LowDiskSpace
+  rules:
+
+  # Low disk space alert
+  - alert: LowDiskSpace
+    expr: node_filesystem_avail_bytes{device="/dev/mapper/ubuntu--vg-ubuntu--lv", fstype="ext4", job="server-exp", mountpoint="/"} / 1024 / 1024 / 1024 < 50
+    for: 30m
+    labels:
+      severity: critical
+    annotations:
+      summary: Low disk space on host {{ $labels.instance }}
+      description: The free disk space on host {{ $labels.instance }} has dropped below 50G
