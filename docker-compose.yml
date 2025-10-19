@@ -7,29 +7,16 @@ volumes:
   alertmanager-data: {}
 
 services:
-  grafana:
-    image: grafana/grafana-enterprise
-    container_name: grafana
-    restart: unless-stopped
-    ports:
-      - '443:3000'
-    networks:
-      - monitoring
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./ssl:/etc/grafana/ssl
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus
     container_name: prometheus
     restart: unless-stopped
     ports:
       - '9090:9090'
     volumes:
-      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./config/prometheus/web.yml:/etc/prometheus/web.yml
-      - ./config/alertmanager/alert-rules.yml:/etc/prometheus/alert-rules.yml
+      - ./config/prometheus:/etc/prometheus
+      - ./config/prometheus/rules:/etc/prometheus/rules
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -46,11 +33,36 @@ services:
     image: prom/alertmanager
     container_name: alertmanager
     restart: unless-stopped
-    ports:
-      - "9093:9093"
     volumes:
-      - "./config/alertmanager:/config"
+      - ./config/alertmanager:/etc/alertmanager
       - alertmanager-data:/data
-    command: --config.file=/config/alertmanager.yml --log.level=debug
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - monitoring
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    restart: always
+    container_name: blackbox-exporter
+    command:
+      - '--config.file=/etc/blackboxexporter/blackbox-exporter.yml'
+    volumes:
+      - ./config/blackbox:/etc/blackboxexporter
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '443:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./ssl:/etc/grafana/ssl
     networks:
       - monitoring
