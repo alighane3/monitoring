@@ -1,14 +1,24 @@
-route:
-  receiver: 'mail'
-  repeat_interval: 4h
-  group_by: [ alertname ]
+global:
+  resolve_timeout: 2m
 
+route:
+  group_by: ['alertname', 'instance']
+  group_wait: 30s
+  group_interval: 3m
+  repeat_interval: 99999h
+  receiver: 'Telegram'
 
 receivers:
-  - name: 'mail'
-    email_configs:
-      - smarthost: 'mail.domain.com:465'
-        auth_username: 'monitoring@domain.com'
-        auth_password: "samplepass"
-        from: 'monitoring@domain.com'
-        to: 'me@domain.com'
+  - name: 'Telegram'
+    telegram_configs:
+      - bot_token: [Your_bot_token]
+        api_url: https://api.telegram.org
+        chat_id: [Your_chat_id start with '-' for telegram channel]
+        parse_mode: 'Markdown'
+        send_resolved: true
+        message: '{{ template "telegram_message" . }}'
+#        http_config:
+#          proxy_url: 'http://'
+
+templates:
+  - '/etc/alertmanager/template/telegram_message.tmpl'
